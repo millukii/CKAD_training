@@ -34,3 +34,6 @@ kube-system   storage-provisioner                1/1     Running   1          6m
 - minikube addons list (Browse the catalog of easily installed Kubernetes services)
 - minikube start -p aged --kubernetes-version=v1.16.1 (Create a second cluster running an older Kubernetes release)
 - minikube delete --all (Delete all of the minikube clusters)
+- minikube addons enable registry (habilitar el container registry para pushear imagenes a minikube)
+- docker build --tag $(minikube ip):5000/test-img:1.0.0 . (build y tag referenciando al registry de minikube)
+- docker push $(minikube ip):5000/test-img (push al registry minikube)
