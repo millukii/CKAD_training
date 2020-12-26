@@ -12,3 +12,4 @@
 ### Referencias
 - https://blog.arima.eu/es/2020/04/28/examen-ckad.html
 - https://minikube.sigs.k8s.io/docs/start/
+- https://blog.arima.eu/assets/extra/2020-04-22-examen-ckad/CKAD-bookmarks.html
