@@ -31,7 +31,7 @@ hello-minikube   NodePort   10.108.26.176   <none>        8080:32216/TCP   29s
 ````
 deployment.apps/balanced created
 ````
-## Crear un servicio de tipo loadbalancer
+## Crear un servicio de tipo loadbalancer que exponga la app fuera del cluster
 
 - kubectl expose deployment balanced --type=LoadBalancer --port=8080
 ````
