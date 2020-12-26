@@ -1,3 +1,5 @@
+### Iniciar minikube permitiendo un registry inseguro
+- minikube start --vm-driver=virtualbox --insecure-registry=localhost:5000
 ### Inicializar modulo
 
 - go mod init go-k8s-app 
@@ -26,6 +28,20 @@ COPY --from=build /go/bin/gok8stest /go/bin/gok8stest
 ENTRYPOINT ["/go/bin/gok8stest"]
 
 `````
+### Habilitar el entorno docker dentro de minikube
+- minikube docker-env
+
+### Apuntar minikube al daemon docker
+- eval $(minikube docker-env) (si nos salimos de la terminal deberemos ejecutar el comando nuevamente)
+
+### Siempre usar una de estas dos opciones en minikube para el deployment. Para que k8s use si o sí las imagenes locales
+````
+imagePullPolicy:IfNotPresent or imagePullPolicy:Never
+````
+### Si queremos que una imagen siempre se cargue con los nuevos clúster. Usamos la caché de minikube
+- minikube cache add alpine:latest
+- minikube cache reload (updatear la imagen después de algún cambio)
+
 ### Construir imagen del código fuente
 
 - docker build --tag $(minikube ip):5000/gok8stest:1.0.0 .
@@ -136,3 +152,50 @@ metadata:
 ### Consultar especificacion del enviroment con filtro
 - kubectl explain pod.spec.containers|grep env
 - kubectl explain pod.spec.containers.envFrom --recursive
+
+### Agregar confimap al deployment
+`````
+        envFrom:
+        - configMapRef:
+            name: gok8stest-config
+`````
+### Actualizar deployment
+- kubectl apply  -f deployment.yaml 
+
+### Crear servicio  y  guardar yaml
+- kubectl expose deployment gok8stest --type=LoadBalancer --port=8080 --dry-run -o yaml > service.yaml
+- kubectl apply  -f service.yaml 
+
+### Ver servicio
+-  kubectl get svc gok8stest
+`````
+NAME        TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+gok8stest   LoadBalancer   10.111.69.81   <pending>     8080:31098/TCP   72s
+``````
+### Un servicio representa un backends de pods que estan disponibles  como endpoints
+- kubectl describe svc gok8stest
+````
+Name:                     gok8stest
+Namespace:                default
+Labels:                   app=gok8stest
+Annotations:              kubectl.kubernetes.io/last-applied-configuration:
+                            {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"app":"gok8stest"},"name":"gok8stest",...
+Selector:                 app=gok8stest
+Type:                     LoadBalancer
+IP:                       10.111.69.81
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  31098/TCP
+Endpoints:
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+````
+### Ver endpoints de un servicio
+- kubectl get ep gok8stest
+`````
+NAME        ENDPOINTS   AGE
+gok8stest               7m10s
+`````
+
+
