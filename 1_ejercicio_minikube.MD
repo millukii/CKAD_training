@@ -38,4 +38,19 @@ deployment.apps/balanced created
 service/balanced exposed
 ````
 
+## En otra ventana, iniciemos el tunnel para crear una  ip ruteable hacia nuestros despligues balanceados:
+
+- minikube tunnel
+
+## Ver servicios balanceados
+
+- kubectl get services balanced
+`````
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
+balanced   LoadBalancer   10.104.131.98   10.104.131.98   8080:31168/TCP   2m22s
+`````
+## Acceder a través de la ip externa
+- 10.104.131.98:8080
+
+
 
